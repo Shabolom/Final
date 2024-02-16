@@ -1,0 +1,305 @@
+definitions:
+  domain.Balance:
+    properties:
+      loyalTokens:
+        type: integer
+      usedLoyalTokens:
+        type: integer
+    type: object
+  domain.History:
+    properties:
+      createdAt:
+        type: string
+      orderNumber:
+        type: integer
+      sum:
+        type: integer
+      userID:
+        type: string
+    type: object
+  models.Error:
+    properties:
+      code:
+        type: integer
+      error:
+        type: string
+    type: object
+  models.Order:
+    properties:
+      number_of_order:
+        type: integer
+    type: object
+  models.Purchase:
+    properties:
+      product:
+        type: integer
+      sum:
+        type: integer
+    type: object
+  models.Register:
+    properties:
+      login:
+        type: string
+      password:
+        type: string
+    type: object
+  models.ReqOrders:
+    properties:
+      order:
+        type: integer
+      when:
+        type: string
+    type: object
+host: localhost:8800
+info:
+  contact:
+    email: tima.gorenskiy@mail.ru
+    url: тут моя контактная информация (https://vk.com/id192672036)
+  description: Это выпускной проэкт с использованием свагера
+  termsOfService: сдесь были бы условия использования еслиб я их мог обозначить
+  title: User API
+  version: 1.0.0
+paths:
+  /api/user/balance:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Balance'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: получение всех заказов сделанных конкретным юзером
+      tags:
+      - User
+  /api/user/balance/withdraw:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: введите номер и стоимость заказа
+        in: body
+        name: ввод
+        required: true
+        schema:
+          $ref: '#/definitions/models.Purchase'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: успешно преобретено
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.Error'
+        "402":
+          description: Payment Required
+          schema:
+            $ref: '#/definitions/models.Error'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: получение всех заказов сделанных конкретным юзером
+      tags:
+      - User
+  /api/user/login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: авторизация
+        in: body
+        name: ввод
+        required: true
+        schema:
+          $ref: '#/definitions/models.Register'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: успешно авторизировались
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: авторизация с выдачей токена в куках и хэдерсе
+      tags:
+      - Authorization
+  /api/user/orders:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.ReqOrders'
+            type: array
+        "204":
+          description: нет данных для ответа
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: получение всех заказов сделанных конкретным юзером
+      tags:
+      - User
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: ввести номер заказа
+        in: body
+        name: ввод
+        required: true
+        schema:
+          $ref: '#/definitions/models.Order'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: номер заказа уже был загружен этим пользователем
+          schema:
+            type: string
+        "202":
+          description: новый номер заказа принят в обработку
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.Error'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/models.Error'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: заносим заказ в историю покупок user,a
+      tags:
+      - User
+  /api/user/register:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: ввести логин и пароль
+        in: body
+        name: ввод
+        required: true
+        schema:
+          $ref: '#/definitions/models.Register'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: вы зарегестрировались
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Error'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: регистрация пользователя с выдачей токена
+      tags:
+      - Authorization
+  /api/user/withdrawals:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.History'
+            type: array
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/models.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: получение всех заказов сделанных конкретным юзером
+      tags:
+      - User
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
