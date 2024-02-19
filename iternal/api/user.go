@@ -63,7 +63,7 @@ func (ua *UserAPI) Regis(c *gin.Context) {
 		return
 	}
 
-	c.Request.Header.Set("Authorization", jwtString)
+	c.Writer.Header().Set("Authorization", jwtString)
 
 	c.String(code, mess)
 }
@@ -182,7 +182,7 @@ func (ua *UserAPI) GetOrder(c *gin.Context) {
 	c.JSON(code, result)
 }
 
-// @Summary	получение всех заказов сделанных конкретным юзером
+// @Summary	получение баланса конкретного юзера
 // @Security ApiKeyAuth
 // @Produce	json
 // @Tags	User
@@ -204,7 +204,7 @@ func (ua *UserAPI) GetBal(c *gin.Context) {
 	c.JSON(code, result)
 }
 
-// @Summary	получение всех заказов сделанных конкретным юзером
+// @Summary	Запрос на списание средств
 // @Security ApiKeyAuth
 // @Accept	json
 // @Produce	json
@@ -239,7 +239,7 @@ func (ua *UserAPI) PostWithD(c *gin.Context) {
 	c.String(code, mess)
 }
 
-// @Summary	получение всех заказов сделанных конкретным юзером
+// @Summary	Получение информации о выводе средств
 // @Security ApiKeyAuth
 // @Produce	json
 // @Tags	User

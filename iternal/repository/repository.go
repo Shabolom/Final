@@ -64,14 +64,14 @@ func (ur *UserRepo) PostOrder(order domain.UserOrder) (string, int, error) {
 		return "", http.StatusBadRequest, err
 	}
 
-	return "новый номер заказа принят в обработку;", http.StatusAccepted, nil
+	return "новый номер заказа принят в обработку;", code, nil
 }
 
 func (ur *UserRepo) FindOrder(order domain.UserOrder) int {
 	var postOrder domain.UserOrder
 
 	err := config.DB.
-		Where("order = ?", order.Order).
+		Where("user_order = ?", order.UserOrder).
 		First(&postOrder).
 		Error
 
@@ -79,7 +79,7 @@ func (ur *UserRepo) FindOrder(order domain.UserOrder) int {
 		return http.StatusAccepted
 	}
 
-	if postOrder.UserID != order.UserID {
+	if postOrder.UserID != order.UserID && postOrder.UserOrder == order.UserOrder {
 		return http.StatusConflict
 	}
 
