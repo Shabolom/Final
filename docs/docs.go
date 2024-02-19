@@ -241,7 +241,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.Order"
+                            "$ref": "#/definitions/models.UserOrder"
                         }
                     }
                 ],
@@ -434,7 +434,7 @@ const docTemplate = `{
                 }
             }
         },
-        "models.Order": {
+        "models.UserOrder": {
             "type": "object",
             "properties": {
                 "number_of_order": {

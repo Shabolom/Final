@@ -69,8 +69,8 @@ func (us *UserService) PostOrder(order models.Order, userID uuid.UUID) (string, 
 	}
 
 	orderEntity := domain.UserOrder{
-		UserID: userID,
-		Order:  order.Number,
+		UserID:    userID,
+		UserOrder: order.Number,
 	}
 	orderEntity.ID = orderID
 
@@ -92,7 +92,7 @@ func (us *UserService) GetOrder(userID uuid.UUID) ([]models.ReqOrders, error, in
 
 	for _, order := range result {
 		reqOrderEntity := models.ReqOrders{
-			Order: order.Order,
+			Order: order.UserOrder,
 			When:  order.CreatedAt,
 		}
 		reqOrders = append(reqOrders, reqOrderEntity)
